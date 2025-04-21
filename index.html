@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WebGIS của Ngọc Anh</title>
   <meta charset="utf-8" />
+  <title>WebGIS với tìm kiếm</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Geocoder CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
   <style>
-    #map {
-      height: 100vh;
-      width: 100%;
-    }
+    #map { height: 100vh; }
   </style>
 </head>
 <body>
 
-<h3 style="text-align:center;">WebGIS của Ngọc Anh</h3>
 <div id="map"></div>
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Geocoder JS -->
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
 <script>
-  // Khởi tạo bản đồ và đặt vị trí trung tâm (tọa độ Việt Nam)
+  // Tạo bản đồ trung tâm ở Việt Nam
   var map = L.map('map').setView([14.0583, 108.2772], 6);
 
-  // Thêm lớp nền từ OpenStreetMap
-L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-  maxZoom: 20,
-  subdomains: ['mt0','mt1','mt2','mt3'],
-  attribution: '© Google Maps'
-}).addTo(map);
+  // Lớp nền ảnh vệ tinh (Esri)
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri'
+  }).addTo(map);
 
-  // Thêm 1 marker (ví dụ tại Hà Nội)
+  // Marker tại Hà Nội
   var marker = L.marker([20.9884 , 105.7958]).addTo(map);
   marker.bindPopup("<b>Hà Nội</b><br>Hanu University").openPopup();
+
+  // Thêm ô tìm kiếm
+  L.Control.geocoder({
+    defaultMarkGeocode: true
+  }).addTo(map);
 </script>
 
 </body>
