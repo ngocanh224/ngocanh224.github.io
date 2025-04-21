@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WebGIS của Ngọc Anh</title>
+  <title>WebGIS Ngọc Anh</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<h3 style="text-align:center;">WebGIS của Ngọc Anh</h3>
+<h3 style="text-align:center;">WebGIS cua Ngọc Anh</h3>
 <div id="map"></div>
 
 <!-- Leaflet JS -->
@@ -74,27 +74,6 @@
   };
 
   L.control.layers(baseMaps).addTo(map);
-
-  // Load lớp ranh giới tỉnh từ file GeoJSON
-  fetch('Vietnamprovinces.geojson')
-    .then(response => response.json())
-    .then(data => {
-      var provinceLayer = L.geoJSON(data, {
-        style: {
-          color: "#ff6600",
-          weight: 1,
-          fillOpacity: 0.2
-        },
-        onEachFeature: function (feature, layer) {
-          const name = feature.properties.Name || feature.properties.name || "Không rõ tên";
-          layer.bindPopup("Tỉnh/Thành: " + name);
-        }
-      }).addTo(map);
-
-      // Thêm lớp overlay và control
-      L.control.layers(baseMaps, { "🗺️ Ranh giới tỉnh": provinceLayer }).addTo(map);
-    });
-
 </script>
 
 </body>
