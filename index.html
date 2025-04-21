@@ -72,8 +72,26 @@
     "🗺️ Google Satellite": googleSatellite,
     "⛰️ Google Terrain": googleTerrain
   };
-
   L.control.layers(baseMaps).addTo(map);
+// Tải và overlay lớp ranh giới tỉnh từ file GeoJSON
+fetch('Vietnamprovinces.geojson')
+  .then(response => response.json())
+  .then(data => {
+    var provinceLayer = L.geoJSON(data, {
+      style: {
+        color: "#ff6600",
+        weight: 1,
+        fillOpacity: 0.2
+      },
+      onEachFeature: function (feature, layer) {
+        const name = feature.properties.Name || feature.properties.name || "Không rõ tên";
+        layer.bindPopup("Tỉnh/Thành: " + name);
+      }
+    }).addTo(map);
+
+    // Thêm lớp overlay vào control
+    L.control.layers(baseMaps, { "🗺️ Ranh giới tỉnh": provinceLayer }).addTo(map);
+  });
 </script>
 
 </body>
