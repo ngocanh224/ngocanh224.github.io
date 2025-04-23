@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "Hobaolinh_polygon",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 105.570701695464393, 21.901202724030927 ], [ 105.570780845773029, 21.921108457740608 ], [ 105.590029103609922, 21.921040684790686 ], [ 105.589947352842032, 21.901135017004247 ], [ 105.570701695464393, 21.901202724030927 ] ] ] ] } }
+]
+}
