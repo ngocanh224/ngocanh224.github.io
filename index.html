@@ -21,6 +21,10 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    // Thêm marker định vị Hồ Bao Linh
+    var baoLinhMarker = L.marker([21.025, 105.85]).addTo(map);
+    baoLinhMarker.bindPopup("<b>Hồ Bao Linh</b>").openPopup();
+    
     // Add GeoJSON overlay
     fetch('Hobaolinh_polygon.geojson') // Ensure this file is in the same folder
       .then(res => res.json())
