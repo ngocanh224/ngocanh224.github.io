@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bao Linh Lake WebGIS</title>
+  <title>Bao Linh Lake WebGIS của Ngọc Anh</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link
@@ -22,7 +22,7 @@
     }).addTo(map);
 
     // Add GeoJSON overlay
-    fetch('bao_linh_lake.geojson') // Ensure this file is in the same folder
+    fetch('Hobaolinh_polygon.geojson') // Ensure this file is in the same folder
       .then(res => res.json())
       .then(data => {
         L.geoJSON(data).addTo(map);
