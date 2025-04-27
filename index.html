@@ -4,32 +4,38 @@
   <title>Bao Linh Lake WebGIS của Ngọc Anh</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 </head>
 <body>
+  <h2 style="text-align:center; font-family:sans-serif;">Bản đồ WebGIS Hồ Bảo Linh</h2>
+  
   <div id="map" style="width: 100%; height: 90vh;"></div>
-  <script>
-    // Create map
-    var map = L.map('map').setView([21.0285, 105.8542], 13); // Adjust center/zoom
 
-    // Add OSM base layer
+  <script>
+    // Khởi tạo bản đồ
+    var map = L.map('map').setView([21.912120, 105.581162], 14); // Set đúng trung tâm Hồ Bảo Linh
+
+    // Lớp nền OSM
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Thêm marker định vị Hồ Bao Linh
+    // Thêm marker vị trí Hồ Bảo Linh
     var baoLinhMarker = L.marker([21.912120, 105.581162]).addTo(map);
-    baoLinhMarker.bindPopup("<b>Hồ Bao Linh</b>").openPopup();
-    
-    // Add GeoJSON overlay
-    fetch('Hobaolinh_polygon.geojson') // Ensure this file is in the same folder
+    baoLinhMarker.bindPopup("<b>Hồ Bảo Linh</b>").openPopup();
+
+    // Thêm lớp GeoJSON Hồ Bảo Linh
+    fetch('Hobaolinh_polygon.geojson')
       .then(res => res.json())
       .then(data => {
-        L.geoJSON(data).addTo(map);
+        L.geoJSON(data, {
+          style: {
+            color: "blue",
+            weight: 2,
+            fillOpacity: 0.4
+          }
+        }).addTo(map);
       });
   </script>
 </body>
