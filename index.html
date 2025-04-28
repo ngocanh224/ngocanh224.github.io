@@ -32,6 +32,15 @@
       margin-right: 8px;
       opacity: 0.7;
     }
+    .label-style {
+      font-size: 12px;
+      font-weight: bold;
+      color: #333;
+      background: rgba(255,255,255,0.7);
+      border-radius: 3px;
+      padding: 2px 4px;
+      border: 1px solid gray;
+    }
   </style>
 </head>
 
@@ -41,7 +50,7 @@
 
   <script>
     // Initialize map
-    var map = L.map('map').setView([11.850, 107.690], 12); // Adjust center Bao Lam
+    var map = L.map('map').setView([11.850, 107.690], 12);
 
     // Add OpenStreetMap basemap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -50,19 +59,17 @@
 
     // Function to get color based on population density
     function getColor(d) {
-      return d > 1000 ? '#800026' :
-             d > 500  ? '#BD0026' :
-             d > 200  ? '#E31A1C' :
-             d > 100  ? '#FC4E2A' :
-             d > 50   ? '#FD8D3C' :
-             d > 20   ? '#FEB24C' :
-             d > 0    ? '#FED976' :
-                        '#FFEDA0';
+      return d > 200 ? '#800026' :
+             d > 150 ? '#BD0026' :
+             d > 100 ? '#E31A1C' :
+             d > 50  ? '#FC4E2A' :
+             d > 20  ? '#FD8D3C' :
+                       '#FFEDA0';
     }
 
     function style(feature) {
       return {
-        fillColor: getColor(feature.properties.population_density),
+        fillColor: getColor(feature.properties["Population Density"]),
         weight: 1,
         opacity: 1,
         color: 'white',
@@ -72,20 +79,27 @@
     }
 
     // Load GeoJSON
-    fetch('Population_density.geojson')
+    fetch('Pop_den.geojson')
       .then(res => res.json())
       .then(data => {
         L.geoJSON(data, {
           style: style,
           onEachFeature: function (feature, layer) {
-            // Show name label
-            if (feature.properties && feature.properties.name) {
-              layer.bindTooltip(feature.properties.name, {
+            // Show name tooltip
+            if (feature.properties && feature.properties.NAME_3) {
+              layer.bindTooltip(feature.properties.NAME_3, {
                 permanent: true,
                 direction: "center",
                 className: "label-style"
               });
             }
+            // Optional: add click popup
+            layer.on('click', function (e) {
+              layer.bindPopup(
+                "<b>Xã/phường:</b> " + feature.properties.NAME_3 + "<br>" +
+                "<b>Mật độ dân số:</b> " + feature.properties["Population Density"] + " người/km²"
+              ).openPopup();
+            });
           }
         }).addTo(map);
       });
@@ -95,11 +109,9 @@
 
     legend.onAdd = function (map) {
       var div = L.DomUtil.create('div', 'legend'),
-          grades = [0, 20, 50, 100, 200, 500, 1000],
-          labels = [];
+          grades = [20, 50, 100, 150, 200];
 
       div.innerHTML += '<b>Mật độ dân số</b><br>';
-      // Loop through intervals
       for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=
           '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
