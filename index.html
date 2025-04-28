@@ -24,6 +24,17 @@
       right: 10px;
       border-radius: 5px;
       border: 1px solid #ccc;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    .legend-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .legend-subtitle {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 6px;
     }
     .legend i {
       width: 18px;
@@ -49,15 +60,12 @@
   <div id="map"></div>
 
   <script>
-    // Initialize map
     var map = L.map('map').setView([11.850, 107.690], 12);
 
-    // Add OpenStreetMap basemap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Function to get color based on population density
     function getColor(d) {
       return d > 200 ? '#800026' :
              d > 150 ? '#BD0026' :
@@ -78,40 +86,61 @@
       };
     }
 
-    // Load GeoJSON
+    function highlightFeature(e) {
+      var layer = e.target;
+      layer.setStyle({
+        weight: 3,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.9
+      });
+      layer.bringToFront();
+    }
+
+    function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+    }
+
+    function onEachFeature(feature, layer) {
+      if (feature.properties && feature.properties.NAME_3) {
+        layer.bindTooltip(feature.properties.NAME_3, {
+          permanent: true,
+          direction: "center",
+          className: "label-style"
+        });
+      }
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: function (e) {
+          layer.bindPopup(
+            "<b>Xã/phường:</b> " + feature.properties.NAME_3 + "<br>" +
+            "<b>Mật độ dân số:</b> " + feature.properties["Population Density"] + " người/km²"
+          ).openPopup();
+        }
+      });
+    }
+
+    var geojson;
+
     fetch('Pop_den.geojson')
       .then(res => res.json())
       .then(data => {
-        L.geoJSON(data, {
+        geojson = L.geoJSON(data, {
           style: style,
-          onEachFeature: function (feature, layer) {
-            // Show name tooltip
-            if (feature.properties && feature.properties.NAME_3) {
-              layer.bindTooltip(feature.properties.NAME_3, {
-                permanent: true,
-                direction: "center",
-                className: "label-style"
-              });
-            }
-            // Optional: add click popup
-            layer.on('click', function (e) {
-              layer.bindPopup(
-                "<b>Xã/phường:</b> " + feature.properties.NAME_3 + "<br>" +
-                "<b>Mật độ dân số:</b> " + feature.properties["Population Density"] + " người/km²"
-              ).openPopup();
-            });
-          }
+          onEachFeature: onEachFeature
         }).addTo(map);
       });
 
-    // Add legend
     var legend = L.control({position: 'topright'});
 
     legend.onAdd = function (map) {
       var div = L.DomUtil.create('div', 'legend'),
           grades = [20, 50, 100, 150, 200];
 
-      div.innerHTML += '<b>Mật độ dân số</b><br>';
+      div.innerHTML += '<div class="legend-title">Population density</div>';
+      div.innerHTML += '<div class="legend-subtitle">(people per km²)</div>';
+      
       for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=
           '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
@@ -121,7 +150,6 @@
     };
 
     legend.addTo(map);
-
   </script>
 </body>
 </html>
